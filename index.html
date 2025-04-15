@@ -2,63 +2,57 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Random Name Picker</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f9;
       text-align: center;
-      padding: 50px;
+      padding-top: 50px;
     }
-    h1 {
+    #selectedName {
+      font-size: 2em;
+      margin: 20px;
       color: #333;
     }
     button {
       padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      transition: background-color 0.3s;
+      font-size: 1em;
     }
-    button:hover {
-      background-color: #45a049;
-    }
-    #randomName {
-      margin-top: 20px;
-      font-size: 24px;
-      font-weight: bold;
-      color: #4CAF50;
+    #remaining {
+      margin-top: 30px;
+      font-size: 0.9em;
+      color: #555;
     }
   </style>
 </head>
 <body>
 
-<h1>TANK AND TRACY Daily Scrum Picker</h1>
-<p>Click the button below to find out the lucky one to start:</p>
+<h1>🎲 TANK AND TRACY Daily Scrum Picker</h1>
+<div id="selectedName">Click the button below to find out the lucky one to start:</div>
+<button onclick="pickName()">lucky one to start tomorrow:</button>
 
-<button onclick="pickRandomName()">Find Out !</button>
-
-<h2 id="randomName">Selected Name: None</h2>
+<div id="remaining"></div>
 
 <script>
-  function pickRandomName() {
-    const names = [
-      "Gill", "Andrew", "Radha Krishna", "Vishak", "Alex",
-      "Sarath", "Sree Lakshmi", "Sahil", "Prajod Krishna", "Jeffy"
-    ];
+  const allNames = [
+    "Sanju", "Andrew", "Radha Krishna", "Vishak", "Sneha",
+    "Sarath", "Sree Lakshmi", "Sahil", "Prajod Krishna", "Jeffy"
+  ];
 
-    // Generate a random index
-    const randomIndex = Math.floor(Math.random() * names.length);
+  let remainingNames = [...allNames];
 
-    // Get the name at the random index
-    const randomName = names[randomIndex];
+  function pickName() {
+    if (remainingNames.length === 0) {
+      remainingNames = [...allNames];
+      alert("All names picked! Resetting the list.");
+    }
 
-    // Display the selected name
-    document.getElementById("randomName").textContent = "Selected Name: " + randomName;
+    const index = Math.floor(Math.random() * remainingNames.length);
+    const selected = remainingNames.splice(index, 1)[0];
+
+    document.getElementById("selectedName").innerText = `🎉 ${selected}`;
+    document.getElementById("remaining").innerText =
+        `Remaining: ${remainingNames.length > 0 ? remainingNames.join(", ") : "None"}`;
   }
 </script>
 
