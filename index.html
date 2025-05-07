@@ -2,6 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <script>
+  const REFRESH_INTERVAL_DAYS = 9;
+  const MS_IN_A_DAY = 86400000;
+  const LAST_VISIT_KEY = 'lastVisitTime';
+
+  const now = Date.now();
+  const lastVisit = localStorage.getItem(LAST_VISIT_KEY);
+
+  if (!lastVisit || now - lastVisit > REFRESH_INTERVAL_DAYS * MS_IN_A_DAY) {
+    localStorage.setItem(LAST_VISIT_KEY, now);
+    location.reload(true); // force reload from server
+  }
+</script>
   <title>Random Name Picker</title>
   <style>
     body {
