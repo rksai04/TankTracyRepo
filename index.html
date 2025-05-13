@@ -12,7 +12,9 @@
 
   if (!lastVisit || now - lastVisit > REFRESH_INTERVAL_DAYS * MS_IN_A_DAY) {
     localStorage.setItem(LAST_VISIT_KEY, now);
-    location.reload(true); // force reload from server
+    console.log("Page refreshed or first visit after interval.");
+  } else {
+    console.log("Welcome back! No refresh needed.");
   }
 </script>
   <title>Random Name Picker</title>
