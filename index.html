@@ -1,77 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <script>
-  const REFRESH_INTERVAL_DAYS = 9;
-  const MS_IN_A_DAY = 86400000;
-  const LAST_VISIT_KEY = 'lastVisitTime';
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <script>
+      const REFRESH_INTERVAL_DAYS = 9;
+      const MS_IN_A_DAY = 86400000;
+      const LAST_VISIT_KEY = 'lastVisitTime';
+      const REMAINING_NAMES_KEY = 'remainingNames';
+      const SELECTED_NAME_KEY = 'selectedName';
 
-  const now = Date.now();
-  const lastVisit = localStorage.getItem(LAST_VISIT_KEY);
+      const now = Date.now();
+      const lastVisit = localStorage.getItem(LAST_VISIT_KEY);
 
-  if (!lastVisit || now - lastVisit > REFRESH_INTERVAL_DAYS * MS_IN_A_DAY) {
-    localStorage.setItem(LAST_VISIT_KEY, now);
-    console.log("Page refreshed or first visit after interval.");
-  } else {
-    console.log("Welcome back! No refresh needed.");
-  }
-</script>
-  <title>Random Name Picker</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding-top: 50px;
-      background: bisque;
-    }
-    #selectedName {
-      font-size: 2em;
-      margin: 20px;
-      color: #333;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 1em;
-      background-color: floralwhite;
-    }
-    #remaining {
-      margin-top: 30px;
-      font-size: 0.9em;
-      color: #555;
-    }
-  </style>
-</head>
-<body>
+      if (!lastVisit || now - lastVisit > REFRESH_INTERVAL_DAYS * MS_IN_A_DAY) {
+        localStorage.setItem(LAST_VISIT_KEY, now);
+        localStorage.removeItem(REMAINING_NAMES_KEY);
+        localStorage.removeItem(SELECTED_NAME_KEY);
+        console.log("List reset due to interval.");
+      } else {
+        console.log("Using stored state.");
+      }
+    </script>
+      <title>Random Name Picker</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          text-align: center;
+          padding-top: 50px;
+          background: bisque;
+        }
+        #selectedName {
+          font-size: 2em;
+          margin: 20px;
+          color: #333;
+        }
+        button {
+          padding: 10px 20px;
+          font-size: 1em;
+          background-color: floralwhite;
+        }
+        #remaining {
+          margin-top: 30px;
+          font-size: 0.9em;
+          color: #555;
+        }
+      </style>
+    </head>
+    <body>
 
-<h1>🎲 TANK AND TRACY Daily Scrum Picker</h1>
-<div id="selectedName">Click the button below to find out the lucky one to start:</div>
-<button onclick="pickName()">lucky one to start tomorrow:</button>
+    <h1>🎲 TANK AND TRACY Daily Scrum Picker</h1>
+    <div id="selectedName">Click the button below to find out the lucky one to start:</div>
+    <button onclick="pickName()">lucky one to start tomorrow:</button>
 
-<div id="remaining"></div>
+    <div id="remaining"></div>
 
-<script>
-  const allNames = [
-    "Sanju", "Andrew", "Radha Krishna", "Vishak", "Sneha",
-    "Sarath", "Sree Lakshmi", "Sahil", "Prajod Krishna", "Jeffy"
-  ];
+    <script>
+      const allNames = [
+        "Sanju", "Andrew", "Radha Krishna", "Vishak", "Sneha",
+        "Sarath", "Sree Lakshmi", "Sahil", "Prajod Krishna", "Jeffy"
+      ];
 
-  let remainingNames = [...allNames];
+      let remainingNames = JSON.parse(localStorage.getItem(REMAINING_NAMES_KEY)) || [...allNames];
+      const savedSelected = localStorage.getItem(SELECTED_NAME_KEY);
 
-  function pickName() {
-    if (remainingNames.length === 0) {
-      remainingNames = [...allNames];
-      alert("All names picked! Resetting the list.");
-    }
+      if (savedSelected) {
+        document.getElementById("selectedName").innerText = `🎉 ${savedSelected}`;
+        document.getElementById("remaining").innerText =
+            `Remaining: ${remainingNames.length > 0 ? remainingNames.join(", ") : "None"}`;
+      }
 
-    const index = Math.floor(Math.random() * remainingNames.length);
-    const selected = remainingNames.splice(index, 1)[0];
+      function pickName() {
+        if (remainingNames.length === 0) {
+          remainingNames = [...allNames];
+          alert("All names picked! Resetting the list.");
+        }
 
-    document.getElementById("selectedName").innerText = `🎉 ${selected}`;
-    document.getElementById("remaining").innerText =
-        `Remaining: ${remainingNames.length > 0 ? remainingNames.join(", ") : "None"}`;
-  }
-</script>
+        const index = Math.floor(Math.random() * remainingNames.length);
+        const selected = remainingNames.splice(index, 1)[0];
 
-</body>
-</html>
+        localStorage.setItem(REMAINING_NAMES_KEY, JSON.stringify(remainingNames));
+        localStorage.setItem(SELECTED_NAME_KEY, selected);
+
+        document.getElementById("selectedName").innerText = `🎉 ${selected}`;
+        document.getElementById("remaining").innerText =
+            `Remaining: ${remainingNames.length > 0 ? remainingNames.join(", ") : "None"}`;
+      }
+    </script>
+
+    </body>
+    </html>
